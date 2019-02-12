@@ -40,30 +40,48 @@ public class UserAccountDAO implements IUserAccountDAO {
 
         Session currentSession = entityManager.unwrap(Session.class);
 
-        currentSession.saveOrUpdate(theUser);
+        Query<UserAccount> theQuery =
+                currentSession.createQuery("from UserAccount where facebook_id=:userAccountId");
+        theQuery.setParameter("userAccountId", theUser.getfacebookId());
+        List<UserAccount> userAccounts = theQuery.getResultList();
 
-        return theUser;
+        if(userAccounts.isEmpty()) {
+            currentSession.saveOrUpdate(theUser);
+            return theUser;
+        }
+        return null;
 
     }
 
     @Override
-    public UserAccount getUser(int theId) {
+    public UserAccount getUser(String facebookId) {
 
         Session currentSession = entityManager.unwrap(Session.class);
 
-        UserAccount theCustomer = currentSession.get(UserAccount.class, theId);
 
-        return theCustomer;
+        Query<UserAccount> theQuery =
+                currentSession.createQuery("from UserAccount where facebook_id=:userAccountId");
+        theQuery.setParameter("userAccountId", facebookId);
+
+        List<UserAccount> userAccounts = theQuery.getResultList();
+
+        if(userAccounts.isEmpty()) {
+           return null;
+        }
+        return  userAccounts.get(0);
+
+//        UserAccount theUser = currentSession.get(UserAccount.class, facebookId);
+
     }
 
     @Override
-    public void deleteUser(int theId) {
+    public void deleteUser(String facebookId) {
 
         Session currentSession = entityManager.unwrap(Session.class);
 
         Query theQuery =
-                currentSession.createQuery("delete from UserAccount where id=:userAccountId");
-        theQuery.setParameter("userAccountId", theId);
+                currentSession.createQuery("delete from UserAccount where facebook_id=:userAccountId");
+        theQuery.setParameter("userAccountId", facebookId);
 
         theQuery.executeUpdate();
 

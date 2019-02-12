@@ -1,11 +1,10 @@
-package com.michal.appka.dao;
+package com.michal.appka.service;
 
 import com.michal.appka.entity.UserAccount;
 
-
 import java.util.List;
 
-public interface IUserAccountDAO {
+public interface IUserAccountService {
 
     public List<UserAccount> getUsers();
 

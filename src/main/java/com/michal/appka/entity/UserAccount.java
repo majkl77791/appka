@@ -3,13 +3,13 @@ package com.michal.appka.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "useraccount")
+@Table(name = "user_account")
 public class UserAccount {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
-    @Column(name="facebookid")
+    @Column(name="facebook_id")
     private String facebookId;
     private String name;
  //   private String gender;

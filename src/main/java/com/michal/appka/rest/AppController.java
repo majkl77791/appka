@@ -1,13 +1,15 @@
 package com.michal.appka.rest;
 
 
-import com.michal.appka.dao.IUserAccountDAO;
 import com.michal.appka.entity.FacebookAccess;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import com.michal.appka.entity.UserAccount;
-import org.springframework.social.facebook.api.*;
+import com.michal.appka.service.IUserAccountService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.social.facebook.api.Facebook;
+import org.springframework.social.facebook.api.MediaOperations;
+import org.springframework.social.facebook.api.User;
 import org.springframework.social.facebook.api.impl.FacebookTemplate;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,21 +18,22 @@ import java.util.List;
 public class AppController {
 
 
-    private IUserAccountDAO userAccountDAO;
+    private IUserAccountService userAccountService;
     private Facebook facebook;
-//    private ConnectionRepository connectionRepository;
-//
-//    private Users user;
-    @Autowired
-    public AppController(IUserAccountDAO userAccountDAO) {
-        this.userAccountDAO = userAccountDAO;
+
+
+    public AppController(IUserAccountService userAccountService) {
+        this.userAccountService = userAccountService;
     }
+
+    @Autowired
+
 
 
     @GetMapping("/users")
     public List<UserAccount> getUsers() {
 
-       return null;
+       return userAccountService.getUsers();
 
     }
 
@@ -42,10 +45,32 @@ public class AppController {
         //   UserAccount me = userOperations.getUserProfile();
         MediaOperations mediaOperations = facebook.mediaOperations();
         User me = facebook.fetchObject("me", User.class);
-        UserAccount u = new UserAccount(me.getId(),me.getName());
+        UserAccount userAccount = new UserAccount(me.getId(),me.getName());
 
         // return u;
-        return userAccountDAO.saveUser(u);    }
+        if(userAccountService.saveUser(userAccount) == null){
+            throw new RuntimeException("User already exist!");
+        }
+        return userAccount;
+    }
+
+    @GetMapping("/users/{user_fb_id}")
+    public UserAccount getUser(@PathVariable String user_fb_id){
+        UserAccount userAccount = userAccountService.getUser(user_fb_id);
+        if (userAccount == null) {
+            throw new RuntimeException("User " + user_fb_id + " not found!");
+        }
+        return userAccount;
+    }
+
+    @DeleteMapping("/users/{user_fb_id}")
+    public void deleteUser(@PathVariable String user_fb_id){
+        UserAccount userAccount = userAccountService.getUser(user_fb_id);
+        if (userAccount == null) {
+            throw new RuntimeException("User " + user_fb_id + " not found!");
+        }
+        userAccountService.deleteUser(user_fb_id);
+    }
 
 
 }

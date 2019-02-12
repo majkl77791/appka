@@ -1,6 +1,6 @@
-CREATE TABLE public.userAccount
+CREATE TABLE public.user_account
 (
   id serial PRIMARY KEY,
-  facebookId VARCHAR (50),
+  facebook_id VARCHAR (50),
   name VARCHAR (50)
 )
