@@ -9,7 +9,7 @@ public interface IUserAccountDAO {
 
     public List<UserAccount> getUsers();
 
-    public UserAccount saveUser(UserAccount theUser);
+    public UserAccount saveUser(UserAccount userAccount);
 
     public UserAccount getUser(String facebookId);
 

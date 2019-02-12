@@ -3,7 +3,6 @@ package com.michal.appka.dao;
 import com.michal.appka.entity.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 
@@ -15,14 +14,13 @@ public class UserAccountDAO implements IUserAccountDAO {
 
     private EntityManager entityManager;
 
-    // set up constructor injection
+
     @Autowired
     public UserAccountDAO(EntityManager theEntityManager) {
         entityManager = theEntityManager;
     }
 
     @Override
-    @Transactional
     public List<UserAccount> getUsers() {
 
         Session currentSession = entityManager.unwrap(Session.class);
@@ -36,18 +34,18 @@ public class UserAccountDAO implements IUserAccountDAO {
     }
 
     @Override
-    public UserAccount saveUser(UserAccount theUser) {
+    public UserAccount saveUser(UserAccount userAccount) {
 
         Session currentSession = entityManager.unwrap(Session.class);
 
         Query<UserAccount> theQuery =
                 currentSession.createQuery("from UserAccount where facebook_id=:userAccountId");
-        theQuery.setParameter("userAccountId", theUser.getfacebookId());
+        theQuery.setParameter("userAccountId", userAccount.getfacebookId());
         List<UserAccount> userAccounts = theQuery.getResultList();
 
         if(userAccounts.isEmpty()) {
-            currentSession.saveOrUpdate(theUser);
-            return theUser;
+            currentSession.saveOrUpdate(userAccount);
+            return userAccount;
         }
         return null;
 
@@ -69,8 +67,6 @@ public class UserAccountDAO implements IUserAccountDAO {
            return null;
         }
         return  userAccounts.get(0);
-
-//        UserAccount theUser = currentSession.get(UserAccount.class, facebookId);
 
     }
 

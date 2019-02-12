@@ -21,13 +21,10 @@ public class AppController {
     private IUserAccountService userAccountService;
     private Facebook facebook;
 
-
+    @Autowired
     public AppController(IUserAccountService userAccountService) {
         this.userAccountService = userAccountService;
     }
-
-    @Autowired
-
 
 
     @GetMapping("/users")
@@ -41,13 +38,13 @@ public class AppController {
     public UserAccount createUsers(@RequestBody FacebookAccess fbAccess) {
 
         Facebook facebook = new FacebookTemplate(fbAccess.getAccessToken());
-        //   UserOperations userOperations = facebook.userOperations();
-        //   UserAccount me = userOperations.getUserProfile();
+
         MediaOperations mediaOperations = facebook.mediaOperations();
         User me = facebook.fetchObject("me", User.class);
+
         UserAccount userAccount = new UserAccount(me.getId(),me.getName());
 
-        // return u;
+
         if(userAccountService.saveUser(userAccount) == null){
             throw new RuntimeException("User already exist!");
         }

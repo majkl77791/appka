@@ -12,7 +12,8 @@ public class UserAccount {
     @Column(name="facebook_id")
     private String facebookId;
     private String name;
- //   private String gender;
+
+    //private String gender;
 
     public UserAccount() {
     }
