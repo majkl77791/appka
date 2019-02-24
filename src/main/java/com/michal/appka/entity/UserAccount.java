@@ -1,6 +1,8 @@
 package com.michal.appka.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "user_account")
@@ -13,6 +15,10 @@ public class UserAccount {
     private String facebookId;
     private String name;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_account_id")
+    private List<UserPhoto> userPhotos;
+
     //private String gender;
 
     public UserAccount() {
@@ -21,8 +27,8 @@ public class UserAccount {
     public UserAccount(String facebookId, String name) {
         this.facebookId = facebookId;
         this.name = name;
-   //     this.gender = gender;
     }
+
 
     public int getId() {
         return id;
@@ -32,11 +38,11 @@ public class UserAccount {
         this.id = id;
     }
 
-    public String getfacebookId() {
+    public String getFacebookId() {
         return facebookId;
     }
 
-    public void setId(String facebookId) {
+    public void setFacebookId(String facebookId) {
         this.facebookId = facebookId;
     }
 
@@ -51,4 +57,21 @@ public class UserAccount {
 //    public String getGender() { return gender; }
 //
 //    public void setGender(String gender) { this.gender = gender; }
+
+
+    public List<UserPhoto> getUserPhotos() {
+        return userPhotos;
+    }
+
+    public void setUserPhotos(List<UserPhoto> userPhotos) {
+        this.userPhotos = userPhotos;
+    }
+
+    public void addPhoto(UserPhoto userPhoto){
+        if (userPhotos == null){
+            userPhotos = new ArrayList<>();
+        }
+
+        userPhotos.add(userPhoto);
+    }
 }

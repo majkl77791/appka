@@ -40,7 +40,7 @@ public class UserAccountDAO implements IUserAccountDAO {
 
         Query<UserAccount> theQuery =
                 currentSession.createQuery("from UserAccount where facebook_id=:userAccountId");
-        theQuery.setParameter("userAccountId", userAccount.getfacebookId());
+        theQuery.setParameter("userAccountId", userAccount.getFacebookId());
         List<UserAccount> userAccounts = theQuery.getResultList();
 
         if(userAccounts.isEmpty()) {
