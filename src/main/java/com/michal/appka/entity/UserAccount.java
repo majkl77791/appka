@@ -11,9 +11,15 @@ public class UserAccount {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="id")
     private int id;
+
     @Column(name="facebook_id")
     private String facebookId;
+
+    @Column(name = "name")
     private String name;
+
+    @Column(name="picture_URL")
+    private String pictureURL;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_account_id")
@@ -24,13 +30,15 @@ public class UserAccount {
     public UserAccount() {
     }
 
-    public UserAccount(String facebookId, String name) {
+    public UserAccount(String facebookId, String name, String pictureURL) {
         this.facebookId = facebookId;
         this.name = name;
+        this.pictureURL = pictureURL;
     }
 
 
     public int getId() {
+
         return id;
     }
 
@@ -47,12 +55,23 @@ public class UserAccount {
     }
 
     public String getName() {
+
         return name;
     }
 
     public void setName(String name) {
+
         this.name = name;
     }
+
+    public String getPictureURL() {
+        return pictureURL;
+    }
+
+    public void setPictureURL(String pictureURL) {
+        this.pictureURL = pictureURL;
+    }
+
 
 //    public String getGender() { return gender; }
 //

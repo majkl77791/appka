@@ -10,11 +10,6 @@ import org.springframework.social.facebook.api.*;
 import org.springframework.social.facebook.api.impl.FacebookTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -39,43 +34,50 @@ public class AppController {
     }
 
     @PostMapping("/users")
-    public UserAccount createUsers(@RequestBody FacebookAccess fbAccess) {
+    public void createUsers(@RequestBody FacebookAccess fbAccess) {
+
 
         Facebook facebook = new FacebookTemplate(fbAccess.getAccessToken());
+        User me = facebook.fetchObject(fbAccess.getFacebookId(), User.class);
 
-        MediaOperations mediaOperations = facebook.mediaOperations();
-        User me = facebook.fetchObject("me", User.class);
+        String pictureURL = facebook.getBaseGraphApiUrl()+me.getId()+"/picture?type=square";
+        UserAccount userAccount = new UserAccount(me.getId(),me.getName(), pictureURL);
 
-        UserAccount userAccount = new UserAccount(me.getId(),me.getName());
+        final MediaOperations mediaOperations = facebook.mediaOperations();
+        final LikeOperations likeOperations = facebook.likeOperations();
 
         final PagedList<Photo> photos = mediaOperations.getPhotos(me.getId());
         for (Photo photo:photos) {
             userAccount.addPhoto(new UserPhoto(photo.getLink(), photo.getSource(), photo.getAlbum().getName()));
-            String photoId = photo.getId();
 
+//      FOLLOWING LINE RETURN 0 FOR EVERY PHOTO, PROBABLY DOESNT RECOGNIZE OBJECT ID AS PHOTO ID
+//      System.out.println(likeOperations.getLikes(photo.getId()).size());
+
+//      FOLLOWING LINE RETURNS NULL, IN THIS VERSION OF SPRING SOCIAL API YOU CANT GET GENDER OF USER
+//      System.out.println(me.getGender());
+
+//      UNCOMMENT FOLLOWING LINES TO GET PHOTOS FROM USER AND SAVE IT TO YOUR LOCAL DISK IN THIS JAVA PROJECT FOLDER\PHOTOS
+/*
+            String photoId = photo.getId();
             final byte[] photoImage = mediaOperations.getPhotoImage(photoId);
             final String property = System.getProperty("user.dir");
             String photoPath = property + "\\photos\\" + photoId + ".jpg";
-            System.out.println(photoPath);
-
             try {
 
                 ByteArrayInputStream bis = new ByteArrayInputStream(photoImage);
                 BufferedImage bImage2 = ImageIO.read(bis);
-
                 ImageIO.write(bImage2, "jpg", new File(photoPath) );
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
+*/
         }
 
-   //     final byte[] userProfileImageByte = facebook.userOperations().getUserProfileImage();
 
         if(userAccountService.saveUser(userAccount) == null){
             throw new RuntimeException("User already exist!");
         }
-        return userAccount;
+
     }
 
     @GetMapping("/users/{user_fb_id}")

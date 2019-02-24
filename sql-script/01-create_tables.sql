@@ -1,8 +1,13 @@
+drop table if exists public.user_photo;
+drop table if exists public.user_account;
+
+
 CREATE TABLE public.user_account
 (
   id serial PRIMARY KEY,
   facebook_id VARCHAR (50),
-  name VARCHAR (50)
+  name VARCHAR (50),
+  picture_URL VARCHAR (255)
 );
 
 CREATE TABLE public.user_photo
