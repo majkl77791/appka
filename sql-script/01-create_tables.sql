@@ -16,6 +16,7 @@ CREATE TABLE public.user_photo
   constraint fk_user_account
   foreign key (user_account_id)
   REFERENCES public.user_account (id)
+  ON DELETE CASCADE
 );
 
 
